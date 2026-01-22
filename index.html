@@ -1,1 +1,37 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>我的数据看板</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+    <h2>我的第一个数据图表</h2>
+    <div id="chart" style="width: 800px;height:400px;"></div>
+    <script>
+        // 1. 加载你的CSV数据
+        fetch('data.csv') // 确保这里的文件名和上传的一致
+            .then(response => response.text())
+            .then(csvText => {
+                // 2. 解析CSV（这里假设CSV是日期,价格 的简单格式）
+                const lines = csvText.split('\n').filter(line => line.trim() !== '');
+                const dates = [];
+                const values = [];
+                lines.forEach((line, index) => {
+                    if (index === 0) return; // 跳过标题行（如果有）
+                    const [date, value] = line.split(',');
+                    dates.push(date);
+                    values.push(parseFloat(value));
+                });
+                // 3. 用ECharts绘制图表
+                const chartDom = document.getElementById('chart');
+                const myChart = echarts.init(chartDom);
+                const option = {
+                    xAxis: { type: 'category', data: dates },
+                    yAxis: { type: 'value' },
+                    series: [{ data: values, type: 'line' }]
+                };
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
